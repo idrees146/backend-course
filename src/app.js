@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+const app = express();
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN
@@ -19,6 +20,10 @@ app.use(cookieParser()) // this is for parsing the cookies from the request head
 //the cookie parser basic function is to set,remove cookie from the client's browser
 
 
+//Routes
+import userRoutes from "./routes/user.routes.js"
 
-const app = express();
+app.use("/api/v1/users", userRoutes) // this is for handling all the user related routes and also prefixing the routes with /api/v1/users
+
+
 export {app}
