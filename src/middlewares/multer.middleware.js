@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
   // Set the destination folder for uploaded files
   destination: function (req, file, cb) {
     // Files will be saved in the 'temp' folder at the project root
-    cb(null, path.join(process.cwd(), "temp"));
+    cb(null, path.join(process.cwd(), "public", "temp"));
   },
   // Set the filename for uploaded files to avoid collisions
   filename: function (req, file, cb) {

@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swagger.js";
+import { ApiError } from "./utils/ApiErrors.js";
 
 const app = express();
 
@@ -23,7 +26,34 @@ app.use(cookieParser()) // this is for parsing the cookies from the request head
 //Routes
 import userRoutes from "./routes/user.routes.js"
 
-app.use("/api/v1/users", userRoutes) // this is for handling all the user related routes and also prefixing the routes with /api/v1/users
+app.use("/api/v1/users", userRoutes)
+
+
+// Swagger API docs — visit http://localhost:8000/api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+
+// Global error handler — catches all errors thrown via ApiError or unexpected errors
+// Must be after all routes (Express identifies error handlers by the 4-param signature)
+app.use((err, req, res, next) => {
+    if (err instanceof ApiError) {
+        return res.status(err.statusCode).json({
+            success: false,
+            message: err.message,
+            errors: err.errors,
+            data: null,
+        });
+    }
+
+    // Unexpected errors
+    console.error(err);
+    return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        errors: [],
+        data: null,
+    });
+});
 
 
 export {app}
